@@ -520,9 +520,11 @@ class GameEngine:
         self._box("📊 GRIX — STATUS")
         print(f"  HP:      {p.hp_bar()}")
         print(f"  Attack:  {p.attack}  (base {p.base_attack}"
-              f"{f' + {p.weapon[\"bonus\"]} weapon' if p.weapon else ''})")
+              f"{' + ' + p.weapon['bonus'] + ' weapon' if p.weapon else ''})")
+        
         print(f"  Defense: {p.defense}  (base {p.base_defense}"
-              f"{f' + {p.armor[\"bonus\"]} armor' if p.armor else ''})")
+              f"{' + ' + p.armor['bonus'] + ' armor' if p.armor else ''})")
+        
         print(f"  Weapon:  {p.weapon['name'] if p.weapon else 'Bare claws'}")
         print(f"  Armor:   {p.armor['name']  if p.armor  else 'Rags and hope'}")
         print(f"  Turns survived: {self.turn_count}")
