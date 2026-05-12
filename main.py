@@ -277,7 +277,7 @@ class GameEngine:
                 continue
             
             # Hero's Turn
-            if self.hero.is_alive
+            if self.hero.is_alive:
 
                 msg, dmg = self.hero.enemy_turn(self.player)
                 print(msg)
