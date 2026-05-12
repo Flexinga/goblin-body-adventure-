@@ -99,8 +99,19 @@ class GameEngine:
 
     def __init__(self):
         self.world = World()
-        self.player = Entity("Grix", hp=30, attack=6, defense=2, is_player=True)
-        self.hero = Entity("The Hero", hp=50, attack=10, defense=4)
+
+        self.player = Entity(
+            "Grix the Frail Gobling ", 
+            hp=60, 
+            attack=13, 
+            defense=4, 
+            is_player=True)
+
+        self.hero = Entity(
+            "The Hell-Bringing Hero", 
+            hp=100, 
+            attack=20, 
+            defense=8) 
         self.hero_defeated = False
         self.turn_count = 0
 
