@@ -7,33 +7,152 @@ import random
 
 class World:
     # rohit owns this
-    # Stores rooms as a dict, each room has: name, description, exits, items
-    # exits = {"north": "room_id", ...}
+    # Stores rooms as a dict, each room has:
+    # name, description, exits
 
     def __init__(self):
-        self.rooms = {}           # populated in _build_map
-        self.items = {}           # room_id -> [item, ...]
+
+        # Room map
+        self.rooms = {
+
+            "start": {
+                "name": "Goblin Camp",
+                "description": "A filthy cave filled with bones and broken weapons.",
+                "exits": {
+                    "east": "forest"
+                }
+            },
+
+            "forest": {
+                "name": "Dark Forest",
+                "description": "Tall dead trees surround you. Strange noises echo around.",
+                "exits": {
+                    "west": "start",
+                    "north": "river",
+                    "east": "ruins"
+                }
+            },
+
+            "river": {
+                "name": "Frozen River",
+                "description": "An icy river blocks part of the path.",
+                "exits": {
+                    "south": "forest"
+                }
+            },
+
+            "ruins": {
+                "name": "Ancient Ruins",
+                "description": "Broken stone pillars and ancient goblin carvings remain here.",
+                "exits": {
+                    "west": "forest",
+                    "east": "castle"
+                }
+            },
+
+            "castle": {
+                "name": "Hero's Castle",
+                "description": "The Hero waits inside the ruined throne room.",
+                "exits": {
+                    "west": "ruins"
+                }
+            }
+        }
+
+        # Items placed in rooms
+        self.items = {
+
+            "start": [
+                {
+                    "name": "Rusty Dagger",
+                    "type": "weapon",
+                    "attack_bonus": 2
+                }
+            ],
+
+            "forest": [
+                {
+                    "name": "Healing Potion",
+                    "type": "potion",
+                    "heal_amount": 30
+                }
+            ],
+
+            "river": [
+                {
+                    "name": "Iron Armor",
+                    "type": "armor",
+                    "defense_bonus": 3
+                }
+            ],
+
+            "ruins": [
+                {
+                    "name": "Goblin Slayer Axe",
+                    "type": "weapon",
+                    "attack_bonus": 5
+                },
+
+                {
+                    "name": "Mega Potion",
+                    "type": "potion",
+                    "heal_amount": 50
+                }
+            ],
+
+            "castle": []
+        }
+
+        # Starting room
         self.current_room_id = "start"
-        raise NotImplementedError("Alice: fill this in")
 
     def current_room(self) -> dict:
-        raise NotImplementedError
+
+        # Return current room data
+        return self.rooms[self.current_room_id]
 
     def move(self, direction: str) -> tuple:
-        # returns (True, room_name) or (False, error_msg)
-        raise NotImplementedError
+
+        room = self.current_room()
+
+        # Check if movement is possible
+        if direction in room["exits"]:
+
+            new_room_id = room["exits"][direction]
+
+            self.current_room_id = new_room_id
+
+            return (True, self.rooms[new_room_id]["name"])
+
+        return (False, "You cannot go that way.")
 
     def get_items_here(self) -> list:
-        raise NotImplementedError
+
+        # Return items in current room
+        return self.items.get(self.current_room_id, [])
 
     def remove_item(self, item_name: str):
-        raise NotImplementedError
+
+        room_items = self.get_items_here()
+
+        for item in room_items:
+
+            if item["name"].lower() == item_name.lower():
+
+                room_items.remove(item)
+                return
 
     def is_boss_room(self) -> bool:
-        raise NotImplementedError
+
+        # Boss room = castle
+        return self.current_room_id == "castle"
 
     def describe_exits(self) -> str:
-        raise NotImplementedError
+
+        exits = self.current_room()["exits"].keys()
+
+        # Format exits nicely
+        return "Exits: " + ", ".join(exits)
 
 class Entity:
     # susuja owns this
