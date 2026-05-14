@@ -52,42 +52,111 @@ class Entity:
 
     @property
     def attack(self) -> int:
-        raise NotImplementedError
+        bonus = self.weapon["attack_bonus"] if self.weapon else 0
+        return self.base_attack + bonus
 
     @property
     def defense(self) -> int:
-        raise NotImplementedError
+        bonus = self.armor["defense_bonus"] if self.armor else 0
+        return self.base_defense + bonus
 
     def is_alive(self) -> bool:
-        raise NotImplementedError
+        return self.hp > 0
 
     def hp_bar(self) -> str:
-        raise NotImplementedError
+        bar_length = 20
+        filled = int((self.hp / self.max_hp) * bar_length)
+        bar = "█" * filled + "░" * (bar_length - filled)
+        return f"[{bar}] {self.hp}/{self.max_hp}"
 
     def pick_up(self, item: dict) -> str:
-        # add to inventory, auto-equip if better, return message
-        raise NotImplementedError
+        self.inventory.append(item)
+        msg = f"You picked up {item['name']}."
+
+        item_type = item.get("type")
+
+        if item_type == "weapon":
+            if self.weapon is None or item["attack_bonus"] > self.weapon["attack_bonus"]:
+                self.weapon = item
+                msg += f" You equip it as your weapon (+{item['attack_bonus']} ATK)."
+
+        elif item_type == "armor":
+            if self.armor is None or item["defense_bonus"] > self.armor["defense_bonus"]:
+                self.armor = item
+                msg += f" You equip it as your armor (+{item['defense_bonus']} DEF)."
+
+        return msg
 
     def use_potion(self) -> tuple:
-        # (True, msg) or (False, msg)
-        raise NotImplementedError
+        # Find first potion in inventory
+        for item in self.inventory:
+            if item.get("type") == "potion":
+                self.inventory.remove(item)
+                heal = item.get("heal_amount", 30)
+                old_hp = self.hp
+                self.hp = min(self.hp + heal, self.max_hp)
+                actual_heal = self.hp - old_hp
+                return (True, f"You drink the {item['name']} and recover {actual_heal} HP. ({self.hp}/{self.max_hp})")
+
+        return (False, "You have no potions!")
 
     def show_inventory(self) -> str:
-        raise NotImplementedError
+        if not self.inventory:
+            return "Your inventory is empty."
+
+        lines = ["Inventory:"]
+        for item in self.inventory:
+            item_type = item.get("type", "misc")
+            if item_type == "weapon":
+                lines.append(f"  - {item['name']} [Weapon, +{item['attack_bonus']} ATK]")
+            elif item_type == "armor":
+                lines.append(f"  - {item['name']} [Armor, +{item['defense_bonus']} DEF]")
+            elif item_type == "potion":
+                lines.append(f"  - {item['name']} [Potion, +{item.get('heal_amount', 30)} HP]")
+            else:
+                lines.append(f"  - {item['name']}")
+
+        equipped = []
+        if self.weapon:
+            equipped.append(f"Weapon: {self.weapon['name']}")
+        if self.armor:
+            equipped.append(f"Armor: {self.armor['name']}")
+        if equipped:
+            lines.append("Equipped: " + ", ".join(equipped))
+
+        return "\n".join(lines)
 
     def calculate_damage(self, target: "Entity") -> int:
-        raise NotImplementedError
+        # Small variance so combat isn't totally deterministic
+        variance = random.randint(-2, 2)
+        return max(1, self.attack + variance)
 
     def take_damage(self, dmg: int) -> int:
-        # applies defense, returns actual damage taken
-        raise NotImplementedError
+        # Defense reduces damage, always at least 1 gets through
+        actual = max(1, dmg - self.defense)
+        self.hp = max(0, self.hp - actual)
+        return actual
 
     def attempt_flee(self) -> bool:
-        raise NotImplementedError
+        # 40% chance to successfully flee
+        return random.random() < 0.4
 
     def enemy_turn(self, target: "Entity") -> tuple:
-        # returns (message, damage_dealt)
-        raise NotImplementedError
+        # Small chance enemy does a heavy blow
+        if random.random() < 0.15:
+            dmg = self.calculate_damage(target) * 2
+            actual = target.take_damage(dmg)
+            return (
+                f"{self.name} unleashes a powerful strike for {actual} damage! ({target.hp}/{target.max_hp} HP)",
+                actual
+            )
+        else:
+            dmg = self.calculate_damage(target)
+            actual = target.take_damage(dmg)
+            return (
+                f"{self.name} attacks you for {actual} damage! ({target.hp}/{target.max_hp} HP)",
+                actual
+            )
 
 
 class GameEngine:
@@ -207,7 +276,7 @@ class GameEngine:
             
             elif cmd == "quit":
                 print("Coward. You have failed your mission.")
-                break
+                break 
 
             else:
                 print("Unknown command.")
