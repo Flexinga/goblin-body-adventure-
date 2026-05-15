@@ -88,7 +88,7 @@ class World:
 
             "ruins": [
                 {
-                    "name": "Goblin Slayer Axe",
+                    "name": "Hero Slayer Axe",
                     "type": "weapon",
                     "attack_bonus": 5
                 },
