@@ -390,6 +390,14 @@ class GameEngine:
                 else:
                     print("Calm down, there's no one here to fight!")
             
+            elif cmd == "date":
+
+                if self.world.is_boss_room():
+                    self._date_hero()
+                else:
+                    print("There is nobody here desperate enough to date you...") 
+
+
             # Heal w/ a potion 
             elif cmd == "potion":
                 success, msg = self.player.use_potion()
@@ -478,6 +486,36 @@ class GameEngine:
                 if not self.player.is_alive():
                     print("You have been defeated by the hero...")
                     return
+
+    def _date_hero(self):
+
+        print("\nYou attemp to rizz up the hero...")
+
+        success = random.random() < 0.25
+
+        if success:
+
+            print("\nThe Hero Blushes.")
+            print("'Nobody's ever called my armour shiny before...'")
+            print("\nYou and the hero abandon violence.")
+            print("Together, you open a bakery in the dark forets")
+            print("The Goblin King is extremely confused...")
+
+            self.hero_defeated = True
+
+        else:
+            
+            print("\nThe hero stares at you with disgust.")
+            print("'Absolutely Not'")
+            print("The hero attacks you for emotional damage.")
+
+            dmg = 10
+
+            actual = self.player.take_damage(dmg)
+
+            print(f"You take {actual} damage!")
+
+
 
     def _cmd_look(self): 
 
@@ -570,6 +608,7 @@ class GameEngine:
         print(" stats - show goblin stats")
         print(" potion - use healing potion")
         print(" fight - fight the Hero")
+        print(" date - attempt to romance the Hero")
         print(" help - show commands")
         print(" quit - quit game")
 
