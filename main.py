@@ -80,8 +80,8 @@ class World:
 
             "river": [
                 {
-                    "name": "Iron Armor",
-                    "type": "armor",
+                    "name": "Iron Armour",
+                    "type": "armour",
                     "defense_bonus": 3
                 }
             ],
@@ -167,7 +167,7 @@ class Entity:
         self.is_player = is_player
         self.inventory = []
         self.weapon = None   # equipped weapon dict or None
-        self.armor = None    # equipped armor dict or None
+        self.armour = None    # equipped armour dict or None
 
     @property
     def attack(self) -> int:
@@ -176,7 +176,7 @@ class Entity:
 
     @property
     def defense(self) -> int:
-        bonus = self.armor["defense_bonus"] if self.armor else 0
+        bonus = self.armour["defense_bonus"] if self.armour else 0
         return self.base_defense + bonus
 
     def is_alive(self) -> bool:
@@ -199,10 +199,10 @@ class Entity:
                 self.weapon = item
                 msg += f" You equip it as your weapon (+{item['attack_bonus']} ATK)."
 
-        elif item_type == "armor":
-            if self.armor is None or item["defense_bonus"] > self.armor["defense_bonus"]:
-                self.armor = item
-                msg += f" You equip it as your armor (+{item['defense_bonus']} DEF)."
+        elif item_type == "armour":
+            if self.armour is None or item["defense_bonus"] > self.armour["defense_bonus"]:
+                self.armour = item
+                msg += f" You equip it as your armour (+{item['defense_bonus']} DEF)."
 
         return msg
 
@@ -228,8 +228,8 @@ class Entity:
             item_type = item.get("type", "misc")
             if item_type == "weapon":
                 lines.append(f"  - {item['name']} [Weapon, +{item['attack_bonus']} ATK]")
-            elif item_type == "armor":
-                lines.append(f"  - {item['name']} [Armor, +{item['defense_bonus']} DEF]")
+            elif item_type == "armour":
+                lines.append(f"  - {item['name']} [Armour, +{item['defense_bonus']} DEF]")
             elif item_type == "potion":
                 lines.append(f"  - {item['name']} [Potion, +{item.get('heal_amount', 30)} HP]")
             else:
@@ -238,8 +238,8 @@ class Entity:
         equipped = []
         if self.weapon:
             equipped.append(f"Weapon: {self.weapon['name']}")
-        if self.armor:
-            equipped.append(f"Armor: {self.armor['name']}")
+        if self.armour:
+            equipped.append(f"Armour: {self.armour['name']}")
         if equipped:
             lines.append("Equipped: " + ", ".join(equipped))
 
@@ -547,12 +547,12 @@ class GameEngine:
         else:
             print("Equipped Weapon: None") 
 
-        # Display equipped armor
-        if self.player.armor:
-            print(f"Equipped Armor: {self.player.armor['name']}")
+        # Display equipped armour
+        if self.player.armour:
+            print(f"Equipped Armour: {self.player.armour['name']}")
 
         else:
-            print("Equipped Armor: None")
+            print("Equipped Armour: None")
  
     def _cmd_help(self):
 
