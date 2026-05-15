@@ -74,7 +74,7 @@ class World:
                 {
                     "name": "Healing Potion",
                     "type": "potion",
-                    "heal_amount": 30
+                    "heal_amount": 35
                 }
             ],
 
@@ -90,7 +90,7 @@ class World:
                 {
                     "name": "Hero Slayer Axe",
                     "type": "weapon",
-                    "attack_bonus": 5
+                    "attack_bonus": 8
                 },
 
                 {
@@ -289,8 +289,8 @@ class GameEngine:
         # Player information, starts weaker, will find items to beat hero
         self.player = Entity(
             "Grix the Frail Goblin", 
-            hp=60, 
-            attack=13, 
+            hp=70, 
+            attack=10, 
             defense=4, 
             is_player=True
         )
@@ -299,7 +299,7 @@ class GameEngine:
         self.hero = Entity(
             "The Hell-Bringing Hero", 
             hp=100, 
-            attack=20, 
+            attack=15, 
             defense=8
         )
 
