@@ -342,6 +342,11 @@ class GameEngine:
             print(room['description'])
             print(self.world.describe_exits())
 
+            # Warn Players of Hero prescence
+            if self.world.is_boss_room() and self.hero.is_alive():
+                print("The Hero stands before you...")
+                print("Type 'fight' to begin the battle.")
+
             # Room Items
             items = self.world.get_items_here()
 
@@ -465,7 +470,7 @@ class GameEngine:
                 continue
             
             # Hero's Turn
-            if self.hero.is_alive:
+            if self.hero.is_alive():
 
                 msg, dmg = self.hero.enemy_turn(self.player)
                 print(msg)
@@ -479,7 +484,7 @@ class GameEngine:
         # Show room description again
         room = self.world.current_room()
 
-        print("|n" + room["name"])
+        print("\n" + room["name"])
         print(room["description"])
 
         items = self.world.get_items_here()
